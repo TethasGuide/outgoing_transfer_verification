@@ -170,10 +170,15 @@ class TransferApp(tk.Tk):
         return tag_item_dict
     def fetch_data(self):
         manifest_number = self.manifest_entry.get()
+        response = None
         if manifest_number:
             api_endpoint = f"https://api.canix.com/api/v1/transfers?where=manifest_number=%27{manifest_number}%27"
             response = get_transfers(api_endpoint, headers, self.logger)
-        if response and isinstance(response, list) and len(response) > 0:
+        else:
+            messagebox.showwarning("Missing Manifest Number", "Please enter a manifest number before fetching data.")
+            self.logger.warning("Manifest number was not provided when attempting to fetch data.")
+
+        if response is not None and isinstance(response, list) and len(response) > 0:
             transfer = response[0]
             self.tag_item_dict = self.process_transfers(transfer)
             self.tag_entry.config(state='normal')

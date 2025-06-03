@@ -14,22 +14,29 @@ Before running the script, ensure Python 3.x is installed on your system. You ca
 Configuration
 API Keys and Credentials
 You need to obtain an API Key from Canix and credentials for Microsoft Office365 access.
-Once you have your Canix API Key, open auth_header.py and fill in the API_KEY variable:
 
-API_KEY = 'your_canix_api_key_here'
+Once you have your Canix API Key and Microsoft credentials you can store them in
+`auth_header.py` or, preferably, load them from environment variables or a
+`.env` file. Example environment variable names:
 
-Similarly, for Microsoft Office365 login details, specify your username and password in the same file:
+```
+export CANIX_API_KEY=your_canix_api_key_here
+export M365_USERNAME=your_microsoft_email_login_here
+export M365_PASSWORD=your_login_password_here
+```
 
-username = "your_microsoft_email_login_here"
-password = "your_login_password_here"
+Alternatively create a `.env` file with the same variables so the script can
+read them without exposing the values in version control.
 
 
 Note: Do not share your API keys or credentials within your code when publishing or sharing your project.
 
 Dependencies
-Install the required Python packages using the requirements file:
+All Python dependencies are listed in `requirements.txt`. Install them with:
 
+```bash
 pip install -r requirements.txt
+```
 
 
 Usage
@@ -41,12 +48,11 @@ Follow the GUI prompts to enter the verifier name, manifest number, and to scan 
 
 Docker Usage
 ------------
-Build the image:
-```
+If you prefer running the verification tool in a container, use the provided
+`Dockerfile` to build an image and run it:
+
+```bash
 docker build -t outgoing-transfer-verification .
-```
-Run the container:
-```
 docker run --rm outgoing-transfer-verification
 ```
 

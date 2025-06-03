@@ -27,9 +27,9 @@ password = "your_login_password_here"
 Note: Do not share your API keys or credentials within your code when publishing or sharing your project.
 
 Dependencies
-Install the required Python packages using pip:
+Install the required Python packages using the requirements file:
 
-pip install requests tkinter concurrent.futures office365-rest-python-client
+pip install -r requirements.txt
 
 
 Usage

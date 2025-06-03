@@ -13,7 +13,13 @@ import atexit
 # Use a shared requests session for API calls
 session = requests.Session()
 atexit.register(session.close)
-from auth_header import headers, username, password
+from auth_header import (
+    headers,
+    username,
+    password,
+    SP_MAIN_SITE_URL,
+    SP_LIBRARY_PATH,
+)
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 
@@ -138,6 +144,10 @@ class TransferApp(tk.Tk):
         self.submit_button.pack(pady=10)
         self.submit_button.config(state='disabled')
 
+        # Settings Button
+        self.settings_button = tk.Button(self, text="Settings", command=self.open_settings)
+        self.settings_button.pack(pady=5)
+
     def process_transfers(self, transfer):
         self.logger.info("Starting to process transfers.")
         tag_item_dict = {}
@@ -240,9 +250,70 @@ class TransferApp(tk.Tk):
             return False
         return True
 
+    def verify_library_exists(self, main_site_url, library_path):
+        try:
+            site_url = f"{main_site_url}/sites/documentcontrol"
+            ctx = ClientContext(site_url).with_credentials(UserCredential(username, password))
+            ctx.web.get_folder_by_server_relative_url(library_path)
+            ctx.execute_query()
+            return True
+        except Exception as e:
+            messagebox.showerror("SharePoint", f"Library not found: {e}")
+            return False
+
+    def open_settings(self):
+        settings = tk.Toplevel(self)
+        settings.title("Settings")
+
+        api_var = tk.StringVar(value=headers.get("X-API-KEY", ""))
+        user_var = tk.StringVar(value=username)
+        pass_var = tk.StringVar(value=password)
+        site_var = tk.StringVar(value=SP_MAIN_SITE_URL)
+        path_var = tk.StringVar(value=SP_LIBRARY_PATH)
+        workers_var = tk.StringVar(value=str(WEIGHT_FETCH_WORKERS))
+
+        row = 0
+        tk.Label(settings, text="CANIX_API_KEY").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=api_var, width=40).grid(row=row, column=1)
+        row += 1
+        tk.Label(settings, text="M365_USERNAME").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=user_var, width=40).grid(row=row, column=1)
+        row += 1
+        tk.Label(settings, text="M365_PASSWORD").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=pass_var, width=40, show="*").grid(row=row, column=1)
+        row += 1
+        tk.Label(settings, text="SP_MAIN_SITE_URL").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=site_var, width=40).grid(row=row, column=1)
+        row += 1
+        tk.Label(settings, text="SP_LIBRARY_PATH").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=path_var, width=40).grid(row=row, column=1)
+        row += 1
+        tk.Label(settings, text="WEIGHT_FETCH_WORKERS").grid(row=row, column=0, sticky="e")
+        tk.Entry(settings, textvariable=workers_var, width=10).grid(row=row, column=1)
+
+        def save():
+            global username, password, SP_MAIN_SITE_URL, SP_LIBRARY_PATH, WEIGHT_FETCH_WORKERS
+            headers["X-API-KEY"] = api_var.get()
+            username = user_var.get()
+            password = pass_var.get()
+            main_site = site_var.get()
+            library_path = path_var.get()
+            if not self.verify_library_exists(main_site, library_path):
+                return
+            SP_MAIN_SITE_URL = main_site
+            SP_LIBRARY_PATH = library_path
+            try:
+                WEIGHT_FETCH_WORKERS = int(workers_var.get())
+            except ValueError:
+                WEIGHT_FETCH_WORKERS = 10
+            settings.destroy()
+
+        tk.Button(settings, text="Save", command=save).grid(row=row+1, column=0, columnspan=2, pady=10)
+
+
     def upload_to_sharepoint(self, local_filepath, file_name):
-        # Main SharePoint Site URL
-        main_site_url = "https://totalhealthcollective.sharepoint.com"
+        # Main SharePoint Site URL (can be overridden via environment variables)
+        main_site_url = SP_MAIN_SITE_URL
 
         # Subsite URL for 'documentcontrol'
         document_control_site_url = f"{main_site_url}/sites/documentcontrol"
@@ -251,7 +322,7 @@ class TransferApp(tk.Tk):
         ctx = ClientContext(document_control_site_url).with_credentials(UserCredential(username, password))
 
         # Server-relative URL for the specific folder in the library
-        server_relative_url = "/sites/documentcontrol/Shared Documents/Controlled Tracking Excels/Shipping/Verification CSVs"
+        server_relative_url = SP_LIBRARY_PATH
 
         sp_library = ctx.web.get_folder_by_server_relative_url(server_relative_url)
 

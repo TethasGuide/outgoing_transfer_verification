@@ -24,6 +24,8 @@ to `.env` and fill in your values. Example environment variable names:
 export CANIX_API_KEY=your_canix_api_key_here
 export M365_USERNAME=your_sharepoint_email_login
 export M365_PASSWORD=your_login_password
+export SP_MAIN_SITE_URL=https://yourcompany.sharepoint.com
+export SP_LIBRARY_PATH="/sites/documentcontrol/Shared Documents/..."
 ```
 
 After updating `.env` with your credentials, the script will load these values
@@ -55,6 +57,19 @@ To run the Outgoing Transfer Verification Tool, execute the following command in
 python verification_function.py
 
 Follow the GUI prompts to enter the verifier name, manifest number, and to scan tags as part of the transfer verification process.
+
+### Settings Window
+
+From the main window you can open **Settings** to update credentials and SharePoint options without restarting.  The following fields can be changed:
+
+* `CANIX_API_KEY`
+* `M365_USERNAME`
+* `M365_PASSWORD`
+* `SP_MAIN_SITE_URL`
+* `SP_LIBRARY_PATH`
+* `WEIGHT_FETCH_WORKERS`
+
+Any changes are stored in memory and apply to future API calls.
 
 Docker Usage
 ------------

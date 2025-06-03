@@ -1,16 +1,14 @@
-import requests
-import logging
-import tkinter as tk
-import tkinter as tk
-from tkinter import messagebox
-import csv
-from datetime import datetime
-import requests
 import logging
 import os
-from auth_header import headers, username, password
-from urllib.parse import quote
+import csv
+
 import concurrent.futures
+from datetime import datetime
+from tkinter import messagebox
+import tkinter as tk
+
+import requests
+from auth_header import headers, username, password
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 

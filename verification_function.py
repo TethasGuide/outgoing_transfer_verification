@@ -32,6 +32,9 @@ def fetch_weight_for_tag(tag, logger):
         response = requests.get(api_endpoint, headers=headers)
         if response.status_code == 200:
             data = response.json()
+            if not data:
+                logger.warning(f"No data returned for tag {tag}")
+                return 0, None
             weight = data[0].get('weight', 0)
             weight_unit = data[0].get('weight_unit', "")
             return weight, weight_unit

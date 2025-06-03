@@ -207,6 +207,7 @@ class TransferApp(tk.Tk):
             self.handle_unrecognized_tag(tag)
 
         self.tag_entry.delete(0, tk.END)
+        self.tag_entry.focus_set()
 
 
     def handle_unrecognized_tag(self, tag):

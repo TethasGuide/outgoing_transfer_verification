@@ -4,11 +4,11 @@ For verifying outgoing transfers utilizing the Canix API.
 The Outgoing Transfer Verification function is a Python script designed to interact with Canix and Microsoft Office365 for the purpose of fetching, processing, and reporting cannabis transfer data. This utility automates the retrieval of transfer data from Canix, augments it with additional details (e.g., weight and unit for each tag), and then generates a verification report which is uploaded to a specified SharePoint document library.
 
 Installation
-To get started with the Transfer Manifest Scanner, clone this repository to your local machine using:
+To get started with the Outgoing Transfer Verification Tool, clone this repository to your local machine using:
 
 
-git clone https://github.com/yourusername/transfer-manifest-scanner.git
-cd transfer-manifest-scanner
+git clone https://github.com/yourusername/outgoing_transfer_verification.git
+cd outgoing_transfer_verification
 Before running the script, ensure Python 3.x is installed on your system. You can download Python here.(https://www.python.org/downloads/)
 
 Configuration
@@ -33,14 +33,25 @@ pip install -r requirements.txt
 
 
 Usage
-To run the Transfer Manifest Scanner, execute the following command in your terminal:
+To run the Outgoing Transfer Verification Tool, execute the following command in your terminal:
 
-python transfer_manifest_scanner.py
+python verification_function.py
 
 Follow the GUI prompts to enter the verifier name, manifest number, and to scan tags as part of the transfer verification process.
 
+Docker Usage
+------------
+Build the image:
+```
+docker build -t outgoing-transfer-verification .
+```
+Run the container:
+```
+docker run --rm outgoing-transfer-verification
+```
+
 Contributing
-Contributions to the Transfer Manifest Scanner are welcome! Please feel free to submit pull requests, report bugs, or suggest features via the GitHub issues page.
+Contributions to the Outgoing Transfer Verification Tool are welcome! Please feel free to submit pull requests, report bugs, or suggest features via the GitHub issues page.
 
 License
 This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.

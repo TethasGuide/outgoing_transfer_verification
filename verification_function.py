@@ -213,9 +213,8 @@ class TransferApp(tk.Tk):
 
     def submit(self):
         if self.check_missed_items():
-            manifest_number = self.manifest_entry.get() 
-            self.generate_csv(manifest_number) 
-            local_file_path, file_name = self.generate_csv(manifest_number) 
+            manifest_number = self.manifest_entry.get()
+            local_file_path, file_name = self.generate_csv(manifest_number)
             self.upload_to_sharepoint(local_file_path, file_name)
             messagebox.showinfo("Success", f"{manifest_number} verification.csv generated successfully!")
             self.destroy()

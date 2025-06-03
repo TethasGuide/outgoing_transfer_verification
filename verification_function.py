@@ -8,6 +8,11 @@ from tkinter import messagebox
 import tkinter as tk
 
 import requests
+import atexit
+
+# Use a shared requests session for API calls
+session = requests.Session()
+atexit.register(session.close)
 from auth_header import headers, username, password
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
@@ -18,7 +23,7 @@ WEIGHT_FETCH_WORKERS = int(os.getenv("WEIGHT_FETCH_WORKERS", "10"))
 
 def get_transfers(api_endpoint, headers, logger):
     try:
-        response = requests.get(api_endpoint, headers=headers)
+        response = session.get(api_endpoint, headers=headers)
         if response.status_code != 200:
             print("Error status code:", response.status_code)
             logger.error(f"Error: {response.status_code} {response.text}")
@@ -33,7 +38,7 @@ def get_transfers(api_endpoint, headers, logger):
 def fetch_weight_for_tag(tag, logger):
     api_endpoint = f"https://api.canix.com/api/v1/packages?where=tag=%27{tag}%27"
     try:
-        response = requests.get(api_endpoint, headers=headers)
+        response = session.get(api_endpoint, headers=headers)
         if response.status_code == 200:
             data = response.json()
             if not data:

@@ -9,6 +9,15 @@ if 'requests' not in sys.modules:
         raise RuntimeError('requests.get should be mocked in tests')
 
     requests_stub.get = dummy_get
+
+    class DummySession:
+        def get(self, *args, **kwargs):
+            raise RuntimeError('session.get should be mocked in tests')
+
+        def close(self):
+            pass
+
+    requests_stub.Session = DummySession
     sys.modules['requests'] = requests_stub
 
 # Stub out office365 modules if not installed so imports succeed

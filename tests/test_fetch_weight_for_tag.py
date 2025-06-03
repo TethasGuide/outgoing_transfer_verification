@@ -8,7 +8,7 @@ def test_fetch_weight_for_tag_success():
     mock_resp = MagicMock()
     mock_resp.status_code = 200
     mock_resp.json.return_value = [{"weight": 5, "weight_unit": "g"}]
-    with patch("verification_function.requests.get", return_value=mock_resp) as mock_get:
+    with patch("verification_function.session.get", return_value=mock_resp) as mock_get:
         logger = logging.getLogger("test")
         weight, unit = fetch_weight_for_tag("TAG1", logger)
     mock_get.assert_called_once()
@@ -20,7 +20,7 @@ def test_fetch_weight_for_tag_empty_response(caplog):
     mock_resp = MagicMock()
     mock_resp.status_code = 200
     mock_resp.json.return_value = []
-    with patch("verification_function.requests.get", return_value=mock_resp):
+    with patch("verification_function.session.get", return_value=mock_resp):
         logger = logging.getLogger("test")
         with caplog.at_level(logging.WARNING):
             weight, unit = fetch_weight_for_tag("TAG123", logger)
@@ -33,7 +33,7 @@ def test_fetch_weight_for_tag_error(caplog):
     mock_resp = MagicMock()
     mock_resp.status_code = 404
     mock_resp.text = "not found"
-    with patch("verification_function.requests.get", return_value=mock_resp):
+    with patch("verification_function.session.get", return_value=mock_resp):
         logger = logging.getLogger("test")
         with caplog.at_level(logging.ERROR):
             weight, unit = fetch_weight_for_tag("TAG404", logger)

@@ -61,4 +61,4 @@ Contributing
 Contributions to the Outgoing Transfer Verification Tool are welcome! Please feel free to submit pull requests, report bugs, or suggest features via the GitHub issues page.
 
 License
-This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the LICENSE file for details.

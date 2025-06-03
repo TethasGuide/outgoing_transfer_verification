@@ -22,12 +22,13 @@ to `.env` and fill in your values. Example environment variable names:
 
 ```
 export CANIX_API_KEY=your_canix_api_key_here
-export SHAREPOINT_USERNAME=your_sharepoint_email_login
-export SHAREPOINT_PASSWORD=your_login_password
+export M365_USERNAME=your_sharepoint_email_login
+export M365_PASSWORD=your_login_password
 ```
 
 After updating `.env` with your credentials, the script will load these values
-automatically when executed.
+automatically when executed. If the variables are not set, any values entered in
+`auth_header.py` will be used instead.
 
 
 Note: Do not share your API keys or credentials within your code when publishing or sharing your project.

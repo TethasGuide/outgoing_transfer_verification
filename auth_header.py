@@ -1,14 +1,23 @@
 import os
 
-# Read configuration from environment variables. If the variables are not set,
-# fall back to empty strings so that the application can handle the missing
-# credentials gracefully.
-API_KEY = os.environ.get("CANIX_API_KEY", "")
-headers = {
-    'X-API-KEY': API_KEY,
-    'Content-Type': 'application/json'
-}
+"""Authentication configuration helpers."""
 
-username = os.environ.get("SHAREPOINT_USERNAME", "")
-password = os.environ.get("SHAREPOINT_PASSWORD", "")
+# These variables can be populated manually if you prefer hard-coding your
+# credentials.  When the respective environment variable is set, it will take
+# precedence over the values defined here.
+DEFAULT_API_KEY = ""
+DEFAULT_M365_USERNAME = ""
+DEFAULT_M365_PASSWORD = ""
+
+# Read configuration from environment variables, falling back to the constants
+# above so the script continues to function even when values are manually
+# inserted here.
+API_KEY = os.getenv("CANIX_API_KEY", DEFAULT_API_KEY)
+username = os.getenv("M365_USERNAME", DEFAULT_M365_USERNAME)
+password = os.getenv("M365_PASSWORD", DEFAULT_M365_PASSWORD)
+
+headers = {
+    "X-API-KEY": API_KEY,
+    "Content-Type": "application/json",
+}
 

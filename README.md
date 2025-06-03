@@ -7,7 +7,7 @@ Installation
 To get started with the Outgoing Transfer Verification Tool, clone this repository to your local machine using:
 
 
-git clone https://github.com/yourusername/outgoing_transfer_verification.git
+git clone https://github.com/TethasGuide/outgoing_transfer_verification.git
 cd outgoing_transfer_verification
 Before running the script, ensure Python 3.x is installed on your system. You can download Python here.(https://www.python.org/downloads/)
 

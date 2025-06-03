@@ -1,0 +1,2 @@
+requests
+office365-rest-python-client

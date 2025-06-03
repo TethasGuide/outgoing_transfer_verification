@@ -31,9 +31,9 @@ def get_transfers(api_endpoint, headers, logger):
     try:
         response = session.get(api_endpoint, headers=headers)
         if response.status_code != 200:
-            print("Error status code:", response.status_code)
+            logger.error("Error status code: %s", response.status_code)
             logger.error(f"Error: {response.status_code} {response.text}")
-            print("Error response:", response.text)
+            logger.error("Error response: %s", response.text)
             
             return None
         return response.json()

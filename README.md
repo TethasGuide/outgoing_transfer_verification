@@ -33,6 +33,14 @@ automatically when executed. If the variables are not set, any values entered in
 
 Note: Do not share your API keys or credentials within your code when publishing or sharing your project.
 
+Thread Pool Workers
+-------------------
+Package weight information is fetched concurrently using threads. The default
+number of worker threads is **10**, but this can be tuned by setting the
+`WEIGHT_FETCH_WORKERS` environment variable before running the script. Adjust
+this value based on your available network capacity and any API rate limits you
+need to respect.
+
 Dependencies
 All Python dependencies are listed in `requirements.txt`. Install them with:
 

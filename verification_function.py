@@ -12,6 +12,10 @@ from auth_header import headers, username, password
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 
+# Number of workers used when fetching package weights concurrently. Can be
+# overridden with the WEIGHT_FETCH_WORKERS environment variable.
+WEIGHT_FETCH_WORKERS = int(os.getenv("WEIGHT_FETCH_WORKERS", "10"))
+
 def get_transfers(api_endpoint, headers, logger):
     try:
         response = requests.get(api_endpoint, headers=headers)
@@ -155,7 +159,7 @@ class TransferApp(tk.Tk):
             self.logger.warning("No tags found in transfer data.")
 
         # Concurrently fetch weights and weight units for each tag
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=WEIGHT_FETCH_WORKERS) as executor:
             tag_details = {tag: executor.submit(fetch_weight_for_tag, tag, self.logger) for tag in tags}
 
         for tag, future in tag_details.items():

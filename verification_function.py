@@ -45,48 +45,6 @@ def fetch_weight_for_tag(tag, logger):
 
 
 
-def process_transfers(self, transfer, logger):
-    self.logger.info("Starting to process transfers.")
-    tag_item_dict = {}
-    tags = []
-
-    # First, collect basic details about each tag
-    for destination in transfer.get("destinations", []):
-        for content in destination.get("contents", []):
-            package = content.get("package", {})
-            tag = package.get("tag")
-            if tag:
-                item = package.get("item", {})
-                item_name = item.get("name")
-                sub_type = item.get("sub_type", {})
-                sub_type_name = sub_type.get("name") if sub_type else None
-                tag_item_dict[tag] = {
-                    'item_name': item_name,
-                    'sub_type_name': sub_type_name
-                }
-                tags.append(tag)
-                self.logger.debug(f"Tag found: {tag}")
-
-    if not tags:
-        self.logger.warning("No tags found in transfer data.")
-
-    # Concurrently fetch weights and weight units for each tag
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        tag_details = {tag: executor.submit(fetch_weight_for_tag, tag, self.logger) for tag in tags}
-
-    for tag, future in tag_details.items():
-        try:
-            weight, weight_unit = future.result()
-            if tag in tag_item_dict:
-                tag_item_dict[tag].update({'weight': weight, 'weight_unit': weight_unit})
-                self.logger.info(f"Updated tag {tag} with weight and unit.")
-            else:
-                self.logger.warning(f"Tag {tag} not found in initial data collection.")
-        except Exception as e:
-            self.logger.error(f"Error processing tag {tag}: {e}")
-
-    self.logger.info("Finished processing transfers.")
-    return tag_item_dict
 
 
 
@@ -166,15 +124,58 @@ class TransferApp(tk.Tk):
         # Submit Button
         self.submit_button = tk.Button(self, text="Submit", command=self.submit)
         self.submit_button.pack(pady=10)
-        self.submit_button.config(state='disabled') 
+        self.submit_button.config(state='disabled')
+
+    def process_transfers(self, transfer):
+        self.logger.info("Starting to process transfers.")
+        tag_item_dict = {}
+        tags = []
+
+        # First, collect basic details about each tag
+        for destination in transfer.get("destinations", []):
+            for content in destination.get("contents", []):
+                package = content.get("package", {})
+                tag = package.get("tag")
+                if tag:
+                    item = package.get("item", {})
+                    item_name = item.get("name")
+                    sub_type = item.get("sub_type", {})
+                    sub_type_name = sub_type.get("name") if sub_type else None
+                    tag_item_dict[tag] = {
+                        'item_name': item_name,
+                        'sub_type_name': sub_type_name
+                    }
+                    tags.append(tag)
+                    self.logger.debug(f"Tag found: {tag}")
+
+        if not tags:
+            self.logger.warning("No tags found in transfer data.")
+
+        # Concurrently fetch weights and weight units for each tag
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            tag_details = {tag: executor.submit(fetch_weight_for_tag, tag, self.logger) for tag in tags}
+
+        for tag, future in tag_details.items():
+            try:
+                weight, weight_unit = future.result()
+                if tag in tag_item_dict:
+                    tag_item_dict[tag].update({'weight': weight, 'weight_unit': weight_unit})
+                    self.logger.info(f"Updated tag {tag} with weight and unit.")
+                else:
+                    self.logger.warning(f"Tag {tag} not found in initial data collection.")
+            except Exception as e:
+                self.logger.error(f"Error processing tag {tag}: {e}")
+
+        self.logger.info("Finished processing transfers.")
+        return tag_item_dict
     def fetch_data(self):
         manifest_number = self.manifest_entry.get()
         if manifest_number:
             api_endpoint = f"https://api.canix.com/api/v1/transfers?where=manifest_number=%27{manifest_number}%27"
             response = get_transfers(api_endpoint, headers, self.logger)
         if response and isinstance(response, list) and len(response) > 0:
-            transfer = response[0] 
-            self.tag_item_dict = process_transfers(self, transfer, self.logger)
+            transfer = response[0]
+            self.tag_item_dict = self.process_transfers(transfer)
             self.tag_entry.config(state='normal')
             self.scan_button.config(state='normal')
             self.submit_button.config(state='normal')

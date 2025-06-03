@@ -8,7 +8,7 @@ import os
 DEFAULT_API_KEY = ""
 DEFAULT_M365_USERNAME = ""
 DEFAULT_M365_PASSWORD = ""
-DEFAULT_SP_MAIN_SITE_URL = "https://totalhealthcollective.sharepoint.com"
+DEFAULT_SP_MAIN_SITE_URL = "https://abcompany.sharepoint.com"
 DEFAULT_SP_LIBRARY_PATH = "/sites/documentcontrol/Shared Documents/Controlled Tracking Excels/Shipping/Verification CSVs"
 
 # Read configuration from environment variables, falling back to the constants

@@ -16,17 +16,18 @@ API Keys and Credentials
 You need to obtain an API Key from Canix and credentials for Microsoft Office365 access.
 
 Once you have your Canix API Key and Microsoft credentials you can store them in
-`auth_header.py` or, preferably, load them from environment variables or a
-`.env` file. Example environment variable names:
+`auth_header.py` or, preferably, load them from environment variables. A
+`.env.example` file is provided that lists the required variables. Copy this file
+to `.env` and fill in your values. Example environment variable names:
 
 ```
 export CANIX_API_KEY=your_canix_api_key_here
-export M365_USERNAME=your_microsoft_email_login_here
-export M365_PASSWORD=your_login_password_here
+export SHAREPOINT_USERNAME=your_sharepoint_email_login
+export SHAREPOINT_PASSWORD=your_login_password
 ```
 
-Alternatively create a `.env` file with the same variables so the script can
-read them without exposing the values in version control.
+After updating `.env` with your credentials, the script will load these values
+automatically when executed.
 
 
 Note: Do not share your API keys or credentials within your code when publishing or sharing your project.
